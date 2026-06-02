@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=tagQ
+Comment=Audio metadata tagger for KDE
+Exec=tagQ
+Icon=tagQ
+Categories=Multimedia;Audio;
+MimeType=audio/mpeg;audio/flac;audio/ogg;audio/mp4;
+Keywords=audio;tag;metadata;tagger;
