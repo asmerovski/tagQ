@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-
-project(tagQ VERSION 1.0.0 LANGUAGES CXX)
-
+project(tagQ VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
@@ -16,11 +14,14 @@ find_package(Qt6 COMPONENTS
     REQUIRED
 )
 
-find_package(KDE6 COMPONENTS 
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+
+find_package(KF6 COMPONENTS 
     CoreAddons
     WidgetsAddons
     KIO
-    ConfigGui
+    ConfigWidgets
     Codecs
     REQUIRED
 )
@@ -53,11 +54,11 @@ target_link_libraries(tagQ
     Qt6::Gui
     Qt6::Widgets
     Qt6::Concurrent
-    KDE6::CoreAddons
-    KDE6::WidgetsAddons
-    KDE6::KIO
-    KDE6::ConfigGui
-    KDE6::Codecs
+    KF6::CoreAddons
+    KF6::WidgetsAddons
+    KF6::KIO
+    KF6::ConfigWidgets
+    KF6::Codecs
     tag
 )
 
