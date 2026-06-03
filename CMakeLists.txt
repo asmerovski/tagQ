@@ -17,13 +17,13 @@ find_package(Qt6 COMPONENTS
 find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
-find_package(KF6 COMPONENTS 
+find_package(KF6 REQUIRED COMPONENTS
     CoreAddons
     WidgetsAddons
-    KIO
+    KIOCore
+    KIOWidgets
     ConfigWidgets
     Codecs
-    REQUIRED
 )
 
 find_package(TagLib REQUIRED)
