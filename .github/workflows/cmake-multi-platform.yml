@@ -53,4 +53,3 @@ steps:
   - name: Test
     working-directory: build
     run: ctest --output-on-failure
-```
