@@ -1,55 +1,55 @@
 name: Build tagQ
 
 on:
-push:
-branches: [ "main" ]
-pull_request:
-branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-container:
-  image: archlinux:latest
+    container:
+      image: archlinux:latest
 
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-  - name: Install dependencies
-    run: |
-      pacman -Syu --noconfirm
+    - name: Install dependencies
+      run: |
+        pacman -Syu --noconfirm
 
-      pacman -S --noconfirm \
-        base-devel \
+        pacman -S --noconfirm \
+          base-devel \
+          cmake \
+          ninja \
+          clang \
+          qt6-base \
+          qt6-tools \
+          extra-cmake-modules \
+          kcoreaddons \
+          kwidgetsaddons \
+          kio \
+          kconfigwidgets \
+          kcodecs \
+          taglib
+
+    - name: Configure
+      run: |
         cmake \
-        ninja \
-        clang \
-        qt6-base \
-        qt6-tools \
-        extra-cmake-modules \
-        kcoreaddons \
-        kwidgetsaddons \
-        kio \
-        kconfigwidgets \
-        kcodecs \
-        taglib
+          -B build \
+          -S . \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER=clang \
+          -DCMAKE_CXX_COMPILER=clang++
 
-  - name: Configure
-    run: |
-      cmake \
-        -B build \
-        -S . \
-        -G Ninja \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_C_COMPILER=clang \
-        -DCMAKE_CXX_COMPILER=clang++
+    - name: Build
+      run: |
+        cmake --build build --parallel
 
-  - name: Build
-    run: |
-      cmake --build build --parallel
-
-  - name: Test
-    working-directory: build
-    run: ctest --output-on-failure
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure
