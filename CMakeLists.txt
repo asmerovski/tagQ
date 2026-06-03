@@ -20,8 +20,7 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 find_package(KF6 REQUIRED COMPONENTS
     CoreAddons
     WidgetsAddons
-    KIOCore
-    KIOWidgets
+    KIO
     ConfigWidgets
     Codecs
 )
@@ -48,7 +47,6 @@ set(tagQ_SOURCES
 )
 
 add_executable(tagQ ${tagQ_SOURCES})
-
 target_link_libraries(tagQ
     Qt6::Core
     Qt6::Gui
@@ -56,7 +54,6 @@ target_link_libraries(tagQ
     Qt6::Concurrent
     KF6::CoreAddons
     KF6::WidgetsAddons
-    KF6::KIOCore
     KF6::KIOWidgets
     KF6::ConfigWidgets
     KF6::Codecs
