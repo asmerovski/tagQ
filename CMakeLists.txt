@@ -26,7 +26,7 @@ find_package(KF6 COMPONENTS
     REQUIRED
 )
 
-find_package(Taglib REQUIRED)
+find_package(TagLib REQUIRED)
 
 set(tagQ_SOURCES
     src/main.cpp
@@ -59,7 +59,7 @@ target_link_libraries(tagQ
     KF6::KIO
     KF6::ConfigWidgets
     KF6::Codecs
-    tag
+    TagLib::TagLib
 )
 
 target_include_directories(tagQ PRIVATE ${TAGLIB_INCLUDE_DIRS})
