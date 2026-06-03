@@ -56,10 +56,11 @@ target_link_libraries(tagQ
     Qt6::Concurrent
     KF6::CoreAddons
     KF6::WidgetsAddons
-    KF6::KIO
+    KF6::KIOCore
+    KF6::KIOWidgets
     KF6::ConfigWidgets
     KF6::Codecs
-    TagLib::TagLib
+    tag
 )
 
 target_include_directories(tagQ PRIVATE ${TAGLIB_INCLUDE_DIRS})
