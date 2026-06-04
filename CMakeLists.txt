@@ -1,31 +1,33 @@
 cmake_minimum_required(VERSION 3.16)
-project(tagQ VERSION 0.0.1 LANGUAGES CXX)
+project(tagQ VERSION 0.1 LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 COMPONENTS 
-    Core 
-    Gui 
-    Widgets 
-    Concurrent
-    REQUIRED
-)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 
-find_package(ECM REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+# ── TagLib ────────────────────────────────────────────────────────────────────
+# Prefer a pre-built static copy (set -DTAGLIB_STATIC_PREFIX=... at configure
+# time). Falls back to pkg-config (system dynamic library).
+set(TAGLIB_STATIC_PREFIX "" CACHE PATH "Path to a static TagLib install prefix")
 
-find_package(KF6 REQUIRED COMPONENTS
-    CoreAddons
-    WidgetsAddons
-    KIO
-    ConfigWidgets
-    Codecs
-)
-
-find_package(TagLib REQUIRED)
+if(EXISTS "${TAGLIB_STATIC_PREFIX}/lib/libtag.a")
+    message(STATUS "tagQ: using static TagLib from ${TAGLIB_STATIC_PREFIX}")
+    add_library(TagLib::tag STATIC IMPORTED)
+    set_target_properties(TagLib::tag PROPERTIES
+        IMPORTED_LOCATION             "${TAGLIB_STATIC_PREFIX}/lib/libtag.a"
+        INTERFACE_INCLUDE_DIRECTORIES "${TAGLIB_STATIC_PREFIX}/include"
+    )
+    set(TAGLIB_LIBRARIES TagLib::tag z)
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(TAGLIB REQUIRED taglib)
+    message(STATUS "tagQ: using system TagLib ${TAGLIB_VERSION}")
+endif()
+# ─────────────────────────────────────────────────────────────────────────────
 
 set(tagQ_SOURCES
     src/main.cpp
@@ -47,21 +49,23 @@ set(tagQ_SOURCES
 )
 
 add_executable(tagQ ${tagQ_SOURCES})
-target_link_libraries(tagQ
+
+target_include_directories(tagQ PRIVATE
+    src
+    ${TAGLIB_INCLUDE_DIRS}
+)
+
+target_link_libraries(tagQ PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
     Qt6::Concurrent
-    KF6::CoreAddons
-    KF6::WidgetsAddons
-    KF6::KIOWidgets
-    KF6::ConfigWidgets
-    KF6::Codecs
-    tag
+    ${TAGLIB_LIBRARIES}
 )
 
-target_include_directories(tagQ PRIVATE ${TAGLIB_INCLUDE_DIRS})
+if(TAGLIB_CFLAGS_OTHER)
+    target_compile_options(tagQ PRIVATE ${TAGLIB_CFLAGS_OTHER})
+endif()
 
 install(TARGETS tagQ DESTINATION bin)
 install(FILES src/tagQ.desktop DESTINATION share/applications)
-install(FILES src/tagQ.svg DESTINATION share/icons/hicolor/scalable/apps)
